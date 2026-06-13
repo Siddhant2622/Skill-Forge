@@ -74,10 +74,20 @@ export function useFaceDetector(
         for (let x = 0; x < 160; x += 8) {
           const idx = y * 160 + x;
           if (skinMap[idx] && !visited[idx]) {
-            const size = floodFill(skinMap, visited, x, y, 160, 120);
-            if (size > 100) {
+            const { count, minX, maxX, minY, maxY } = floodFill(skinMap, visited, x, y, 160, 120);
+            if (count > 60) {
               // Minimum region size for a face
               regionCount++;
+              
+              const width = maxX - minX;
+              const height = maxY - minY;
+              
+              // A typical single face is taller than it is wide.
+              // If the skin region is unusually wide (width > height * 1.2) AND occupies a decent width,
+              // it's highly likely to be two overlapping faces or two faces side-by-side that merged.
+              if (width > 50 && width > height * 1.2) {
+                regionCount++;
+              }
             }
           }
         }
@@ -127,9 +137,13 @@ function floodFill(
   startY: number,
   w: number,
   h: number
-): number {
+): { count: number; minX: number; maxX: number; minY: number; maxY: number } {
   const stack = [[startX, startY]];
   let count = 0;
+  let minX = startX;
+  let maxX = startX;
+  let minY = startY;
+  let maxY = startY;
 
   while (stack.length > 0 && count < 2000) {
     const [x, y] = stack.pop()!;
@@ -138,7 +152,13 @@ function floodFill(
     if (visited[idx] || !map[idx]) continue;
     visited[idx] = 1;
     count++;
+    
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+
     stack.push([x + 4, y], [x - 4, y], [x, y + 4], [x, y - 4]);
   }
-  return count;
+  return { count, minX, maxX, minY, maxY };
 }
