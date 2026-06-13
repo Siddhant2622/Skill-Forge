@@ -12,10 +12,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { db } from "@/lib/firebase";
 import { doc, setDoc, getDoc, arrayUnion } from "firebase/firestore";
 import { uploadFileToSupabase } from "@/lib/supabase";
+import { usePortfolioStore } from "@/store/portfolioStore";
 
 export default function MultiStepOnboarding() {
   const router = useRouter();
   const { user } = useAuth();
+  const { mergedData } = usePortfolioStore();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     targetCompany: "",
@@ -146,6 +148,18 @@ export default function MultiStepOnboarding() {
       formDataObj.append("targetRole", formData.targetRole);
       formDataObj.append("targetCompany", formData.targetCompany);
       formDataObj.append("expectedSalary", formData.expectedSalary);
+      
+      const md = mergedData as any;
+      if (md.github && md.github.repos && md.github.repos.length > 0) {
+        // Only send top 10 repos to avoid massive token usage
+        const repoSummary = md.github.repos.slice(0, 10).map((r: any) => ({
+          name: r.name,
+          description: r.description,
+          language: r.language,
+          stars: r.stargazers_count
+        }));
+        formDataObj.append("githubData", JSON.stringify(repoSummary));
+      }
 
       const res = await fetch("/api/analyze", {
         method: "POST",

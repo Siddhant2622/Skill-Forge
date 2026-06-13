@@ -9,6 +9,7 @@ export async function POST(req: Request) {
     const targetCompany = formData.get("targetCompany") as string || "Tech Company";
     const expectedSalary = formData.get("expectedSalary") as string || "";
     const resumeTextForm = formData.get("resumeText") as string | null;
+    const githubData = formData.get("githubData") as string | null;
 
     // Read the file content
     let resumeText = resumeTextForm || "";
@@ -59,6 +60,13 @@ export async function POST(req: Request) {
           "Earn AWS Developer Associate Certification",
           "Contribute to 2 open source React projects"
         ],
+        projectImprovements: [
+          { projectName: "E-Commerce App", improvement: "Add Redis caching to improve product load times and handle concurrent users better." },
+          { projectName: "Chat Application", improvement: "Implement WebSockets instead of polling to reduce server load and improve latency." }
+        ],
+        recommendedProjects: [
+          { name: "Microservices Deployment", description: "Containerize your existing monolithic app using Docker and deploy with Kubernetes.", reason: "Your GitHub shows monolithic Node.js apps. Adding container orchestration is critical for senior roles." }
+        ],
         extractedResumeText: "Demo resume text - no API key provided."
       });
     }
@@ -69,11 +77,12 @@ export async function POST(req: Request) {
       generationConfig: { responseMimeType: "application/json" }
     });
 
-    const promptText = `
-You are an expert AI Career Coach and Tech Recruiter.
-Analyze the following candidate's resume against their target role of "${targetRole}" at "${targetCompany}" with an expected salary of "${expectedSalary}".
+    const promptText = `You are an expert AI Career Coach and Tech Recruiter.
+Analyze the following candidate's resume and GitHub data against their target role of "${targetRole}" at "${targetCompany}" with an expected salary of "${expectedSalary}".
 
 ${resumeText ? `Resume Text:\n"""\n${resumeText}\n"""` : "The resume is attached as a file. Please extract all text from it first."}
+
+${githubData ? `GitHub Repositories & Data:\n"""\n${githubData}\n"""\nAnalyze these repositories to suggest how they can improve their existing projects and what new projects they should build to fill skill gaps.` : "No GitHub data provided. Base your project suggestions solely on the resume."}
 
 Output the result strictly as a JSON object with the following schema, and do not include markdown blocks like \`\`\`json:
 {
@@ -87,6 +96,12 @@ Output the result strictly as a JSON object with the following schema, and do no
   "dailyPlan": ["string", "string", "string"],
   "weeklyMilestones": ["string", "string"],
   "monthlyTargets": ["string", "string"],
+  "projectImprovements": [
+    { "projectName": "string", "improvement": "string (A specific, actionable technical improvement for an existing project)" }
+  ],
+  "recommendedProjects": [
+    { "name": "string", "description": "string", "reason": "string (Why this project fills a gap in their GitHub/Resume)" }
+  ],
   "extractedResumeText": "The full plain text you extracted from the resume",
   "personalInfo": {
     "firstName": "string (empty if not found)",

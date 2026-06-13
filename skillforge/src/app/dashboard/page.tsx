@@ -314,10 +314,52 @@ export default function DashboardOverview() {
               </div>
 
             </div>
-
             </div>
           </CardContent>
         </Card>
+
+        {/* Project Analysis Section */}
+        {analysis.projectImprovements && analysis.projectImprovements.length > 0 && (
+          <Card className="glass-card border-border mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="w-5 h-5 text-orange-500" /> What to Improve in Existing Projects
+              </CardTitle>
+              <CardDescription>Actionable feedback to upgrade your current GitHub & Resume projects</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {analysis.projectImprovements.map((proj: any, i: number) => (
+                <div key={i} className="p-4 rounded-xl border border-orange-500/20 bg-orange-500/5">
+                  <h4 className="font-bold text-orange-500 mb-1">{proj.projectName}</h4>
+                  <p className="text-sm text-foreground/90">{proj.improvement}</p>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
+        {analysis.recommendedProjects && analysis.recommendedProjects.length > 0 && (
+          <Card className="glass-card border-border mt-6">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Sparkles className="w-5 h-5 text-emerald-500" /> Recommended Projects to Build
+              </CardTitle>
+              <CardDescription>Tailored suggestions based on missing skills in your GitHub repositories</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {analysis.recommendedProjects.map((proj: any, i: number) => (
+                <div key={i} className="p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                  <h4 className="font-bold text-emerald-500 mb-1">{proj.name}</h4>
+                  <p className="text-sm text-foreground/90 mb-2">{proj.description}</p>
+                  <div className="text-xs text-muted-foreground p-2 bg-background rounded-lg border border-border">
+                    <span className="font-bold">Why?</span> {proj.reason}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+        )}
+
       </div>
     </div>
   );
