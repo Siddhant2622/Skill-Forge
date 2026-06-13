@@ -137,7 +137,8 @@ export default function InterviewPage() {
         // Also try to fetch from extension profile if still nothing
         if (!localResumeText && !existingResumeText) {
           try {
-            const res = await fetch(`http://localhost:8000/api/extension/profile?user_id=${user.uid}`);
+            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+            const res = await fetch(`${backendUrl}/api/extension/profile?user_id=${user.uid}`);
             if (res.ok) {
               const data = await res.json();
               if (data && data.experience && data.experience !== "Experience extracted from resume.") {

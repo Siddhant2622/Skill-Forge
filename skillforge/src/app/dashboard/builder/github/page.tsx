@@ -20,7 +20,8 @@ export default function GithubStep() {
 
   useEffect(() => {
     if (user && !username) {
-      fetch(`http://localhost:8000/api/extension/profile?user_id=${user.uid}`)
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      fetch(`${backendUrl}/api/extension/profile?user_id=${user.uid}`)
         .then(res => res.json())
         .then(data => {
           if (data?.personal_info?.github) {

@@ -54,7 +54,8 @@ export default function TemplatesStep() {
     }
     setIsInjecting(true);
     try {
-      const response = await fetch("http://localhost:8000/api/github-injector/clone-and-inject", {
+      const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+      const response = await fetch(`${backendUrl}/api/github-injector/clone-and-inject`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ repo_url: repoUrl, user_data: fullData })

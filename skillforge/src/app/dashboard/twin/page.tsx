@@ -42,7 +42,8 @@ export default function MultiStepOnboarding() {
     if (user) {
       const checkProfile = async () => {
         try {
-          const res = await fetch(`http://localhost:8000/api/extension/profile?user_id=${user.uid}`);
+          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+          const res = await fetch(`${backendUrl}/api/extension/profile?user_id=${user.uid}`);
           if (!res.ok) return;
           const data = await res.json();
           if (data && data.experience && data.experience !== "Experience extracted from resume.") {
@@ -208,7 +209,8 @@ export default function MultiStepOnboarding() {
           };
 
           try {
-            await fetch(`http://localhost:8000/api/extension/profile?user_id=${user.uid}`, {
+            const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+            await fetch(`${backendUrl}/api/extension/profile?user_id=${user.uid}`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(profileData)

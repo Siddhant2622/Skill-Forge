@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
     // 1. Fetch user profile from python backend
     let profile = null;
     try {
-      const profileRes = await fetch(`http://localhost:3000/api/extension/profile?user_id=${userId}`);
+      const profileRes = await fetch(`${req.nextUrl.origin}/api/extension/profile?user_id=${userId}`);
       if (profileRes.ok) {
         profile = await profileRes.json();
       }

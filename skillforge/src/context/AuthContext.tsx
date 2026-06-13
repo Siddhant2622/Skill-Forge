@@ -36,7 +36,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           
           const controller = new AbortController();
           const timeout = setTimeout(() => controller.abort(), 2000);
-          await fetch(`http://localhost:8000/api/extension/profile?user_id=${currentUser.uid}`, {
+          const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+          await fetch(`${backendUrl}/api/extension/profile?user_id=${currentUser.uid}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(profileData),

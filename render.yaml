@@ -1,0 +1,27 @@
+services:
+  # 1. FastAPI Python Backend Service
+  - type: web
+    name: skillmap-backend
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
+
+  # 2. Next.js Node Frontend Service
+  - type: web
+    name: skillforge-frontend
+    env: node
+    rootDir: skillforge
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_VERSION
+        value: 18.0.0
+      - key: NEXT_PUBLIC_BACKEND_URL
+        value: https://skillmap-backend.onrender.com
+      - key: DATABASE_URL
+        value: "file:./dev.db"
+      - key: GEMINI_API_KEY
+        sync: false # User can input this securely in Render dashboard
