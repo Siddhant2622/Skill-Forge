@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -131,6 +131,18 @@ export default function Home() {
 
   // FAQ Accordion State
   const [faqOpenIndex, setFaqOpenIndex] = useState<number | null>(null);
+
+  // Navbar Scroll State
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const handleLogin = async () => {
     try {
@@ -285,7 +297,7 @@ export default function Home() {
       </div>
 
       {/* Navbar */}
-      <nav className="fixed top-0 w-full z-50 glass border-b border-border/40 backdrop-blur-md">
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-background/80 backdrop-blur-md border-b border-border/40 shadow-sm' : 'bg-transparent border-transparent'}`}>
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-primary" />
