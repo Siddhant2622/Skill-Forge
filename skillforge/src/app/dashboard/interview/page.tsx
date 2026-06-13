@@ -493,8 +493,9 @@ export default function InterviewPage() {
       if (e.error === "no-speech") return;
       
       console.error("Speech error:", e.error);
-      // 'network' error causes infinite loop if we auto-restart, so treat it as fatal and fallback to text mode
-      if (e.error === "not-allowed" || e.error === "service-not-available" || e.error === "network") {
+      // Treat 'not-allowed' and 'service-not-available' as fatal.
+      // We removed 'network' from fatal because Chrome often throws false-positive network errors randomly.
+      if (e.error === "not-allowed" || e.error === "service-not-available") {
         isFatalError = true;
         setShowTextInput(true);
       }
