@@ -32,7 +32,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-blue-500/10 text-blue-600 border-blue-500/20",
     matchScore: 92,
     postedAt: "2 hours ago",
-    skills: ["React", "TypeScript", "Node.js"]
+    skills: ["React", "TypeScript", "Node.js"],
+    link: "https://www.linkedin.com/jobs/search/?keywords=Software%20Engineering%20Intern"
   },
   {
     id: "2",
@@ -45,7 +46,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-orange-500/10 text-orange-600 border-orange-500/20",
     matchScore: 88,
     postedAt: "5 hours ago",
-    skills: ["React", "CSS", "Redux"]
+    skills: ["React", "CSS", "Redux"],
+    link: "https://www.naukri.com/frontend-developer-intern-jobs"
   },
   {
     id: "3",
@@ -58,7 +60,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-indigo-500/10 text-indigo-600 border-indigo-500/20",
     matchScore: 85,
     postedAt: "1 day ago",
-    skills: ["MERN Stack", "System Design"]
+    skills: ["MERN Stack", "System Design"],
+    link: "https://unstop.com/hackathons"
   },
   {
     id: "4",
@@ -71,7 +74,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-green-500/10 text-green-600 border-green-500/20",
     matchScore: 75,
     postedAt: "3 days ago",
-    skills: ["Figma", "React", "Tailwind"]
+    skills: ["Figma", "React", "Tailwind"],
+    link: "https://www.fiverr.com/search/gigs?query=ui%20developer"
   },
   {
     id: "5",
@@ -84,7 +88,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-blue-500/10 text-blue-600 border-blue-500/20",
     matchScore: 65,
     postedAt: "1 hour ago",
-    skills: ["Java", "AWS", "DSA"]
+    skills: ["Java", "AWS", "DSA"],
+    link: "https://www.linkedin.com/jobs/search/?keywords=SDE%20Intern"
   },
   {
     id: "6",
@@ -97,7 +102,8 @@ const MOCK_INTERNSHIPS = [
     platformColor: "bg-red-500/10 text-red-600 border-red-500/20",
     matchScore: 82,
     postedAt: "2 days ago",
-    skills: ["React Native", "JavaScript"]
+    skills: ["React Native", "JavaScript"],
+    link: "https://wellfound.com/jobs"
   }
 ];
 
@@ -220,10 +226,12 @@ export default function InternshipFinderPage() {
                   </div>
                 </div>
 
-                <Button size="sm" className="bg-primary text-white hover:bg-primary/90 flex items-center gap-1.5 group-hover:scale-105 transition-transform">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Auto-Apply
-                </Button>
+                <a href={job.link} target="_blank" rel="noopener noreferrer">
+                  <Button size="sm" className="bg-primary text-white hover:bg-primary/90 flex items-center gap-1.5 group-hover:scale-105 transition-transform">
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    Apply Now
+                  </Button>
+                </a>
               </div>
             </Card>
           </motion.div>
