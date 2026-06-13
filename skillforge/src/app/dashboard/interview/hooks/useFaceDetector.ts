@@ -97,7 +97,7 @@ export function useFaceDetector(
 
       if (faceCount > 1) {
         multiDetectCount.current++;
-        if (multiDetectCount.current > 1) { // Trigger after 2 consecutive seconds
+        if (multiDetectCount.current >= 1) { // Trigger immediately without waiting
           // Sustained multi-face
           warningsRef.current = Math.min(warningsRef.current + 1, 3);
           multiDetectCount.current = 0;

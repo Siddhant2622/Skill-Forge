@@ -238,8 +238,6 @@ export default function InterviewPage() {
       if (strikes >= 3) {
         setTimeout(() => endInterview(true), 3000);
       }
-    } else if (faceCount <= 1 && warningType === "face") {
-      setShowWarning(false);
     }
   }, [phase, faceMetrics.faceCount, faceMetrics.warnings, warningType, triggerWarning]);
 
