@@ -7,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Brain, Briefcase, GraduationCap, Target, TrendingUp, Sparkles, AlertTriangle } from "lucide-react";
-import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar } from "recharts";
+import { ResponsiveContainer, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { useAuth } from "@/context/AuthContext";
 import { db } from "@/lib/firebase";
 import { doc, getDoc } from "firebase/firestore";
@@ -127,38 +127,76 @@ export default function DashboardOverview() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Skill Radar */}
-        <Card className="glass-card border-border flex flex-col">
-          <CardHeader>
-            <CardTitle>System Skill Gap Analysis</CardTitle>
-            <CardDescription>Your current proficiency vs. industry benchmark</CardDescription>
-          </CardHeader>
-          <CardContent className="flex-1 flex flex-col">
-            <div className="flex-1 min-h-[300px]">
-              <ResponsiveContainer width="100%" height="100%">
-                <RadarChart cx="50%" cy="50%" outerRadius="70%" data={analysis.skills}>
-                  <PolarGrid stroke="var(--color-border)" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} />
-                  <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                  <Radar name="Student" dataKey="score" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.3} />
-                </RadarChart>
-              </ResponsiveContainer>
-            </div>
-            
-            <div className="mt-4 pt-4 border-t border-border">
-              <h4 className="text-sm font-semibold mb-3 flex items-center text-red-400">
-                <AlertTriangle className="w-4 h-4 mr-2" /> Top Missing Skills
-              </h4>
-              <div className="flex flex-wrap gap-2">
-                {analysis.missingSkills.map((skill: string, i: number) => (
-                  <Badge key={i} variant="outline" className="border-red-500/20 bg-red-500/10 text-red-300">
-                    {skill}
-                  </Badge>
-                ))}
+        {/* Left Column */}
+        <div className="space-y-6">
+          {/* Skill Radar */}
+          <Card className="glass-card border-border flex flex-col">
+            <CardHeader>
+              <CardTitle>System Skill Gap Analysis</CardTitle>
+              <CardDescription>Your current proficiency vs. industry benchmark</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col">
+              <div className="flex-1 min-h-[300px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={analysis.skills}>
+                    <PolarGrid stroke="var(--color-border)" />
+                    <PolarAngleAxis dataKey="subject" tick={{ fill: "var(--color-muted-foreground)", fontSize: 12 }} />
+                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                    <Radar name="Student" dataKey="score" stroke="var(--color-primary)" fill="var(--color-primary)" fillOpacity={0.3} />
+                  </RadarChart>
+                </ResponsiveContainer>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+              
+              <div className="mt-4 pt-4 border-t border-border">
+                <h4 className="text-sm font-semibold mb-3 flex items-center text-red-400">
+                  <AlertTriangle className="w-4 h-4 mr-2" /> Top Missing Skills
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {analysis.missingSkills.map((skill: string, i: number) => (
+                    <Badge key={i} variant="outline" className="border-red-500/20 bg-red-500/10 text-red-300">
+                      {skill}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Predictive Trend Chart */}
+          <Card className="glass-card border-border flex flex-col">
+            <CardHeader>
+              <CardTitle>Placement Probability Forecast</CardTitle>
+              <CardDescription>Predicted readiness over a 6-month timeline</CardDescription>
+            </CardHeader>
+            <CardContent className="flex-1 flex flex-col min-h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={[
+                  { month: "M1", score: Math.max(20, analysis.placementProbability - 40) },
+                  { month: "M2", score: Math.max(30, analysis.placementProbability - 25) },
+                  { month: "M3", score: Math.max(50, analysis.placementProbability - 10) },
+                  { month: "M4", score: analysis.placementProbability },
+                  { month: "M5", score: Math.min(95, analysis.placementProbability + 15) },
+                  { month: "M6", score: Math.min(99, analysis.placementProbability + 25) },
+                ]}>
+                  <defs>
+                    <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="month" stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--color-muted-foreground)" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}%`} />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--color-border)" />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: 'var(--color-card)', borderColor: 'var(--color-border)', borderRadius: '8px' }}
+                    itemStyle={{ color: 'var(--color-foreground)' }}
+                  />
+                  <Area type="monotone" dataKey="score" stroke="var(--color-primary)" fillOpacity={1} fill="url(#colorScore)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            </CardContent>
+          </Card>
+        </div>
 
         {/* System Learning Roadmap */}
         <Card className="glass-card border-border">
