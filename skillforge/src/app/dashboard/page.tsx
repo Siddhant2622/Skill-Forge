@@ -184,69 +184,98 @@ export default function DashboardOverview() {
 
             <div className="relative border-l-2 border-primary/20 ml-3 space-y-8 pb-4 pt-2">
               
-              {/* Step 1 */}
-              <div className="relative pl-6">
-                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-4 ring-background">
+            <div className="relative border-l-2 border-primary/20 ml-3 space-y-10 pb-4 pt-2">
+              
+              {/* Step 1: Daily Foundations */}
+              <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-4 ring-background shadow-md">
                   <div className="w-2 h-2 rounded-full bg-primary-foreground" />
                 </div>
-                <h4 className="text-sm font-bold text-foreground mb-1">Step 1: Daily Foundations</h4>
-                <p className="text-xs text-muted-foreground mb-3">Immediate actions to close your skill gap.</p>
-                <div className="space-y-2">
-                  {analysis.dailyPlan.slice(0, 3).map((task: string, i: number) => (
-                    <div key={i} className="flex items-start gap-2 p-2.5 rounded-md border border-border/50 bg-background/50 text-sm">
-                      <div className="w-4 h-4 rounded-full border border-primary/50 flex-shrink-0 mt-0.5" />
-                      <span className="leading-tight">{task}</span>
+                <div className="mb-4">
+                  <h4 className="text-lg font-bold text-foreground flex items-center gap-2">
+                    Phase 1: Daily Habits <Badge variant="secondary" className="text-[10px]">Short-term</Badge>
+                  </h4>
+                  <p className="text-sm text-muted-foreground mt-1">Foundational micro-tasks to close your immediate skill gaps.</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {analysis.dailyPlan.map((task: string, i: number) => (
+                    <div key={i} className="flex gap-3 p-4 rounded-xl border border-border/50 bg-background hover:bg-accent/50 transition-colors shadow-sm group">
+                      <div className="mt-0.5 flex-shrink-0">
+                        <div className="w-6 h-6 rounded-full bg-primary/10 text-primary flex items-center justify-center text-xs font-bold border border-primary/20 group-hover:bg-primary group-hover:text-white transition-colors">
+                          {i + 1}
+                        </div>
+                      </div>
+                      <div className="text-sm font-medium leading-relaxed">{task}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Step 2 */}
-              <div className="relative pl-6">
-                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center ring-4 ring-background">
+              {/* Step 2: Weekly Milestones */}
+              <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center ring-4 ring-background shadow-md">
                   <div className="w-2 h-2 rounded-full bg-white" />
                 </div>
-                <h4 className="text-sm font-bold text-blue-400 mb-1">Step 2: Weekly Milestones</h4>
-                <div className="space-y-1.5 mt-2">
-                  {analysis.weeklyMilestones.slice(0, 2).map((ms: string, i: number) => (
-                    <div key={i} className="text-sm text-muted-foreground flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-blue-500/50" />
-                      {ms}
+                <div className="mb-4">
+                  <h4 className="text-lg font-bold text-blue-500 flex items-center gap-2">
+                    Phase 2: Weekly Milestones <Badge variant="outline" className="text-[10px] text-blue-500 border-blue-500/30">Mid-term</Badge>
+                  </h4>
+                  <p className="text-sm text-muted-foreground mt-1">Project-based targets to validate your daily learnings.</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {analysis.weeklyMilestones.map((ms: string, i: number) => (
+                    <div key={i} className="flex gap-3 p-4 rounded-xl border border-blue-500/20 bg-blue-500/5 hover:bg-blue-500/10 transition-colors shadow-sm">
+                      <div className="mt-0.5 w-2 h-2 rounded-full bg-blue-500 flex-shrink-0 relative top-1.5" />
+                      <div className="text-sm font-medium text-foreground/90">{ms}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
-              {/* Step 3 */}
-              <div className="relative pl-6">
-                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center ring-4 ring-background">
+              {/* Step 3: Monthly Targets */}
+              <div className="relative pl-8">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center ring-4 ring-background shadow-md">
                   <div className="w-2 h-2 rounded-full bg-white" />
                 </div>
-                <h4 className="text-sm font-bold text-purple-400 mb-1">Step 3: Monthly Targets</h4>
-                <div className="space-y-1.5 mt-2">
-                  {analysis.monthlyTargets.slice(0, 2).map((target: string, i: number) => (
-                    <div key={i} className="text-sm text-muted-foreground flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-purple-500/50" />
-                      {target}
+                <div className="mb-4">
+                  <h4 className="text-lg font-bold text-purple-500 flex items-center gap-2">
+                    Phase 3: Monthly Targets <Badge variant="outline" className="text-[10px] text-purple-500 border-purple-500/30">Long-term</Badge>
+                  </h4>
+                  <p className="text-sm text-muted-foreground mt-1">Major achievements required to become interview-ready.</p>
+                </div>
+                <div className="grid grid-cols-1 gap-3">
+                  {analysis.monthlyTargets.map((target: string, i: number) => (
+                    <div key={i} className="flex gap-3 p-4 rounded-xl border border-purple-500/20 bg-purple-500/5 hover:bg-purple-500/10 transition-colors shadow-sm">
+                      <div className="mt-0.5 flex-shrink-0">
+                        <Target className="w-4 h-4 text-purple-500" />
+                      </div>
+                      <div className="text-sm font-medium text-foreground/90">{target}</div>
                     </div>
                   ))}
                 </div>
               </div>
 
               {/* Final Destination */}
-              <div className="relative pl-6">
-                <div className="absolute -left-[15px] top-0.5 w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center ring-4 ring-background shadow-lg shadow-emerald-500/20">
-                  <Target className="w-4 h-4 text-white" />
+              <div className="relative pl-8">
+                <div className="absolute -left-[15px] top-0.5 w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center ring-4 ring-background shadow-lg shadow-emerald-500/40">
+                  <Sparkles className="w-4 h-4 text-white" />
                 </div>
-                <h4 className="text-base font-bold text-emerald-400">Destination Reached</h4>
-                <p className="text-sm text-foreground font-medium mt-1">
-                  {userData?.targetRole || "Software Engineer"} @ {userData?.targetCompany || "Top Tech Company"}
-                </p>
-                <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
-                  <Briefcase className="w-3.5 h-3.5" />
-                  Expected: {userData?.expectedSalary || "$100k+"}
+                <div className="p-5 rounded-xl bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 shadow-sm">
+                  <h4 className="text-xl font-bold text-emerald-500 mb-1">Destination Reached</h4>
+                  <p className="text-base text-foreground font-semibold mt-1">
+                    {userData?.targetRole || "Software Engineer"} @ {userData?.targetCompany || "Top Tech Company"}
+                  </p>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Upon completing this roadmap, you will have the exact skill profile required to secure this position.
+                  </p>
+                  <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500 text-white text-xs font-bold shadow-sm">
+                    <Briefcase className="w-4 h-4" />
+                    Target Salary: {userData?.expectedSalary || "$100k+"}
+                  </div>
                 </div>
               </div>
+
+            </div>
 
             </div>
           </CardContent>
