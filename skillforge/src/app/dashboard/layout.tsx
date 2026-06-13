@@ -168,7 +168,7 @@ export default function DashboardLayout({
         {/* Topbar */}
         <header className={cn(
           "absolute top-0 left-0 w-full h-16 flex items-center justify-between px-4 md:px-8 z-20 transition-all duration-300",
-          scrolled ? "bg-background/60 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent border-transparent"
+          scrolled ? "bg-background/60 backdrop-blur-3xl border-b border-border shadow-sm" : "bg-transparent border-transparent"
         )}>
           <div className="flex items-center gap-3">
             <button 
