@@ -208,10 +208,12 @@ export default function CareerSuccessDashboard() {
           <p className="text-indigo-100 mb-6 leading-relaxed">
             Based on your overall score of {scores.overall}%, you should focus on improving your LinkedIn profile visibility and adding more action verbs to your resume. Let our AI guide you through the next steps.
           </p>
-          <button className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-50 transition-colors flex items-center gap-2">
-            <TrendingUp className="w-5 h-5" />
-            View Personalized Action Plan
-          </button>
+          <Link href="/dashboard">
+            <button className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-50 transition-colors flex items-center gap-2 mt-2">
+              <TrendingUp className="w-5 h-5" />
+              View Personalized Action Plan
+            </button>
+          </Link>
         </div>
       </motion.div>
     </div>
