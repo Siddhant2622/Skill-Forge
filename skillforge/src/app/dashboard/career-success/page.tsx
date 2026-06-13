@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { 
-  FileText, 
+  FileSignature, 
   CheckCircle, 
   Globe, 
   ArrowRight,
@@ -30,7 +30,7 @@ export default function CareerSuccessDashboard() {
     {
       title: "AI Resume Builder",
       description: "Create a professional, ATS-friendly resume with AI-powered content generation.",
-      icon: FileText,
+      icon: FileSignature,
       href: "/dashboard/career-success/resume-builder",
       color: "from-blue-500/20 to-indigo-500/20",
       iconColor: "text-blue-500",
@@ -116,7 +116,7 @@ export default function CareerSuccessDashboard() {
             <div className="col-span-1 md:col-span-3 grid grid-cols-1 sm:grid-cols-3 gap-6">
               <div className="bg-background/40 rounded-2xl p-6 border border-border/50">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500"><FileText className="w-5 h-5" /></div>
+                  <div className="p-2 bg-blue-500/10 rounded-lg text-blue-500"><FileSignature className="w-5 h-5" /></div>
                   <h4 className="font-medium text-muted-foreground">Resume Strength</h4>
                 </div>
                 <div className="text-3xl font-bold">{scores.resume}%</div>
