@@ -18,7 +18,8 @@ import {
   Sparkles,
   Puzzle,
   Menu,
-  X
+  X,
+  Globe
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
@@ -29,6 +30,7 @@ const sidebarLinks = [
   { name: "Career Success Platform", href: "/dashboard/career-success", icon: Briefcase },
   { name: "Interview Simulator", href: "/dashboard/interview", icon: Briefcase },
   { name: "Scholarship Finder", href: "/dashboard/scholarships", icon: GraduationCap },
+  { name: "Internship Finder", href: "/dashboard/internships", icon: Globe },
   { name: "Portfolio Builder", href: "/dashboard/builder", icon: Sparkles },
   { name: "Browser Extension", href: "/dashboard/extension", icon: Puzzle },
   { name: "Profile Settings", href: "/dashboard/profile", icon: Settings },
