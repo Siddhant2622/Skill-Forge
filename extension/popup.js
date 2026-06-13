@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const setupView = document.getElementById('setupView');
   const mainView = document.getElementById('mainView');
   const secretKeyInput = document.getElementById('secretKeyInput');
+  const baseUrlInput = document.getElementById('baseUrlInput');
   const saveKeyBtn = document.getElementById('saveKeyBtn');
   const unlinkBtn = document.getElementById('unlinkBtn');
   
@@ -28,8 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let currentBestMatchUrl = null;
 
   // Check for existing key
-  chrome.storage.local.get(['skillmapKey'], (result) => {
+  chrome.storage.local.get(['skillmapKey', 'skillmapBaseUrl'], (result) => {
     if (result.skillmapKey) {
+      if (result.skillmapBaseUrl) {
+        baseUrlInput.value = result.skillmapBaseUrl;
+      }
       showMainView(result.skillmapKey);
     } else {
       setupView.classList.remove('hidden');
@@ -38,8 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   saveKeyBtn.addEventListener('click', () => {
     const key = secretKeyInput.value.trim();
-    if (key) {
-      chrome.storage.local.set({ skillmapKey: key }, () => {
+    let baseUrl = baseUrlInput.value.trim();
+    if (baseUrl.endsWith('/')) {
+      baseUrl = baseUrl.slice(0, -1);
+    }
+    if (key && baseUrl) {
+      chrome.storage.local.set({ skillmapKey: key, skillmapBaseUrl: baseUrl }, () => {
         setupView.classList.add('hidden');
         showMainView(key);
       });
@@ -48,11 +56,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   unlinkBtn.addEventListener('click', (e) => {
     e.preventDefault();
-    chrome.storage.local.remove('skillmapKey', () => {
+    chrome.storage.local.remove(['skillmapKey', 'skillmapBaseUrl'], () => {
       mainView.classList.add('hidden');
       setupView.classList.remove('hidden');
       userProfile = null;
       secretKeyInput.value = '';
+      baseUrlInput.value = 'http://localhost:3000';
     });
   });
 

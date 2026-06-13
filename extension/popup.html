@@ -23,8 +23,10 @@
     <main id="setupView" class="hidden">
       <section class="action-section text-center">
         <h2>Link Account</h2>
-        <p class="subtitle" style="margin-bottom: 15px;">Enter your Secret Pairing Key from your Dashboard</p>
-        <input type="text" id="secretKeyInput" placeholder="Paste key here..." style="width: 100%; padding: 10px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #333; background: rgba(0,0,0,0.2); color: white;" />
+        <p class="subtitle" style="margin-bottom: 5px; text-align: left;">Secret Pairing Key</p>
+        <input type="text" id="secretKeyInput" placeholder="Paste user.uid here..." style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #333; background: rgba(0,0,0,0.2); color: white;" />
+        <p class="subtitle" style="margin-bottom: 5px; text-align: left;">Web App URL (e.g. Render/Localhost)</p>
+        <input type="text" id="baseUrlInput" value="http://localhost:3000" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #333; background: rgba(0,0,0,0.2); color: white;" />
         <button id="saveKeyBtn" class="primary-btn">Link Extension</button>
       </section>
     </main>
