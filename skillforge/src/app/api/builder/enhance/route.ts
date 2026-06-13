@@ -59,7 +59,7 @@ Do not wrap in markdown blocks.`;
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "llama3-8b-8192", // Safe model that explicitly supports json_object
+            model: "llama-3.3-70b-versatile", // Safe model that explicitly supports json_object
             messages: [{ role: "user", content: promptText }],
             response_format: { type: "json_object" }
           })
