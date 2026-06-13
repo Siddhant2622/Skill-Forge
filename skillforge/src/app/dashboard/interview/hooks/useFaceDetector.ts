@@ -95,9 +95,9 @@ export function useFaceDetector(
         }
       }
 
-      const faceCount = Math.max(1, Math.min(regionCount, 5));
+      const faceCount = Math.max(0, Math.min(regionCount, 5));
 
-      if (faceCount > 1) {
+      if (faceCount > 1 || faceCount === 0) {
         multiDetectCount.current++;
         if (multiDetectCount.current >= 1) { // Trigger immediately without waiting
           // Sustained multi-face

@@ -130,7 +130,7 @@ ${candidateProfile ? `- Name: ${candidateProfile.name}
 - Experience Level: ${candidateProfile.experienceLevel}` : ""}
 
 RAW RESUME TEXT (Scan this carefully for specific languages like C++, JS, Python, and project details to ask about):
-${resumeText || "Not provided."}
+${(resumeText || "Not provided.").substring(0, 3000)}
 `;
     }
 
@@ -259,44 +259,43 @@ You MUST output your response strictly as a JSON object with this exact schema (
           });
 
           if (!groqRes.ok) {
-            throw new Error("Both Gemini and Groq failed.");
+            throw new Error(`Groq HTTP error: ${groqRes.status}`);
           }
 
           const groqData = await groqRes.json();
           let text = groqData.choices[0].message.content.trim();
           
-          let data;
-          try {
-            const jsonMatch = text.match(/\{[\s\S]*\}/);
-            const cleanJson = jsonMatch ? jsonMatch[0] : text;
-            data = JSON.parse(cleanJson);
-          } catch (parseError) {
-            data = {
-              reply: text,
-              score: 75,
-              is_cheating_detected: false
-            };
-          }
+          const jsonMatch = text.match(/\{[\s\S]*\}/);
+          const cleanJson = jsonMatch ? jsonMatch[0] : text;
+          const parsedData = JSON.parse(cleanJson);
 
           const isComplete =
             questionNumber >= 8 ||
-            data.reply.toLowerCase().includes("conclude") ||
-            data.reply.toLowerCase().includes("wrap up") ||
-            data.reply.toLowerCase().includes("that concludes");
+            parsedData.reply.toLowerCase().includes("conclude") ||
+            parsedData.reply.toLowerCase().includes("wrap up");
 
           const categories = ["Technical", "DSA", "Projects", "System Design", "Behavioral", "Framework"];
           
           return NextResponse.json({
-            reply: data.reply,
-            score: data.score,
+            reply: parsedData.reply || "Could you elaborate on that?",
+            score: parsedData.score || 75,
             difficulty: difficulty,
             isComplete,
             questionCategory: categories[questionNumber % categories.length],
-            is_cheating_detected: data.is_cheating_detected || false
+            is_cheating_detected: parsedData.is_cheating_detected || false
           });
         } catch (groqError) {
-          console.error("Groq also failed, using demo mode:", groqError);
-          // Fall through to demo mode below
+          console.error("Groq fallback also failed:", groqError);
+          const isComplete = questionNumber >= 8;
+          const categories = ["Technical", "DSA", "Projects", "System Design", "Behavioral", "Framework"];
+          return NextResponse.json({
+            reply: isComplete ? "That concludes our interview! Thank you for your time." : "That's an interesting point. Can you elaborate more on your experience with this?",
+            score: 75,
+            difficulty: difficulty,
+            isComplete,
+            questionCategory: categories[questionNumber % categories.length],
+            is_cheating_detected: false
+          });
         }
       }
     }
