@@ -203,7 +203,7 @@ export default function CareerSuccessDashboard() {
         <div className="relative z-10 md:w-2/3">
           <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">
             <Sparkles className="w-6 h-6" />
-            AI Career Coach
+            Career Coach
           </h3>
           <p className="text-indigo-100 mb-6 leading-relaxed">
             Based on your overall score of {scores.overall}%, you should focus on improving your LinkedIn profile visibility and adding more action verbs to your resume. Let our AI guide you through the next steps.
