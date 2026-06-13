@@ -42,32 +42,54 @@ Do not wrap in markdown blocks.`;
       resultText = result.response.text().trim();
     } catch (err: any) {
       console.warn(`Gemini API overloaded/failed (${err.message || err.status}), falling back to Groq...`);
-      const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          messages: [{ role: "user", content: promptText }],
-          response_format: { type: "json_object" }
-        })
-      });
       
-      if (!groqRes.ok) {
-        throw new Error("429 Quota Exceeded: Both Gemini and Groq APIs are unavailable.");
+      try {
+        const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+          method: "POST",
+          headers: {
+            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            model: "llama-3.3-70b-versatile",
+            messages: [{ role: "user", content: promptText }],
+            response_format: { type: "json_object" }
+          })
+        });
+        
+        if (!groqRes.ok) {
+          const errorText = await groqRes.text();
+          throw new Error(`Groq API error: ${groqRes.status} ${errorText}`);
+        }
+        
+        const groqData = await groqRes.json();
+        if (groqData.choices && groqData.choices[0] && groqData.choices[0].message) {
+          resultText = groqData.choices[0].message.content.trim();
+        } else {
+          throw new Error("Invalid response format from Groq");
+        }
+      } catch (groqErr: any) {
+        throw new Error(`Both APIs failed. Gemini error: ${err.message}. Groq error: ${groqErr.message}`);
       }
-      
-      const groqData = await groqRes.json();
-      resultText = groqData.choices[0].message.content.trim();
     }
 
-    const cleanText = resultText.replace(/```json/gi, "").replace(/```/g, "").trim();
-    return NextResponse.json(JSON.parse(cleanText));
+    let parsedData;
+    try {
+      const cleanText = resultText.replace(/```json/gi, "").replace(/```/g, "").trim();
+      parsedData = JSON.parse(cleanText);
+    } catch (parseError) {
+      console.error("Failed to parse AI response:", resultText);
+      // Fallback safe payload
+      parsedData = {
+        headline: "Professional Developer",
+        bio: "An experienced software professional passionate about building great solutions. (Generated via safe-fallback due to API formatting issues)"
+      };
+    }
+
+    return NextResponse.json(parsedData);
 
   } catch (error: any) {
     console.error("Enhance error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Failed to generate enhancements" }, { status: 500 });
   }
 }
