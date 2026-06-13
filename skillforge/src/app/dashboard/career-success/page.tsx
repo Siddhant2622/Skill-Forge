@@ -28,7 +28,7 @@ export default function CareerSuccessDashboard() {
 
   const cards = [
     {
-      title: "AI Resume Builder",
+      title: "Resume Builder",
       description: "Create a professional, ATS-friendly resume with AI-powered content generation.",
       icon: FileSignature,
       href: "/dashboard/career-success/resume-builder",

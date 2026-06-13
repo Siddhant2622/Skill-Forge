@@ -88,7 +88,7 @@ export default function ResumeBuilder() {
         <div className="p-6 border-b border-border bg-background/50 flex items-center justify-between">
           <h2 className="text-xl font-bold flex items-center gap-2">
             <Wand2 className="w-5 h-5 text-primary" />
-            AI Resume Builder
+            Resume Builder
           </h2>
           <div className="flex gap-2">
             <button onClick={() => {
