@@ -217,12 +217,17 @@ export default function InterviewPage() {
   }, [cheatMetrics.warnings, cheatMetrics.isViolation, triggerWarning]);
 
   // ─── FACE DETECTION: 3 warnings then end ────────────────────────
+  // Track the last face warning count we reacted to, so we only fire once per new warning
+  const lastFaceWarningRef = useRef(0);
   useEffect(() => {
     if (phase !== "interviewing") return;
     const faceCount = faceMetrics.faceCount;
-    if (faceCount > 1) {
-      faceWarningCountRef.current += 1;
-      const strikes = faceWarningCountRef.current;
+    const faceWarnings = faceMetrics.warnings;
+
+    // Only trigger a new warning if the hook produced a new warning we haven't handled
+    if (faceCount > 1 && faceWarnings > lastFaceWarningRef.current) {
+      lastFaceWarningRef.current = faceWarnings;
+      const strikes = faceWarnings;
       const level = Math.min(strikes, 3) as 1 | 2 | 3;
       const messages = [
         "Multiple faces detected. Warning 1 of 3 — only you should be visible.",
@@ -233,10 +238,10 @@ export default function InterviewPage() {
       if (strikes >= 3) {
         setTimeout(() => endInterview(true), 3000);
       }
-    } else if (warningType === "face") {
+    } else if (faceCount <= 1 && warningType === "face") {
       setShowWarning(false);
     }
-  }, [phase, faceMetrics.faceCount, warningType, triggerWarning]);
+  }, [phase, faceMetrics.faceCount, faceMetrics.warnings, warningType, triggerWarning]);
 
   // ─── FULLSCREEN: mandatory, 3 exits then end ───────────────────
   useEffect(() => {
@@ -309,6 +314,7 @@ export default function InterviewPage() {
     isSubmittingRef.current = false;
     faceWarningCountRef.current = 0;
     fsWarningCountRef.current = 0;
+    lastFaceWarningRef.current = 0;
     
     const greeting = "Hello! I am your System Interviewer. We will begin with a few technical questions. Are you ready?";
     
@@ -490,6 +496,14 @@ export default function InterviewPage() {
 
     recognition.onend = () => {
       setIsListening(false);
+      // Auto-restart if interview is still going and AI isn't speaking
+      if (phaseRef.current === "interviewing" && !isAiSpeakingRef.current && !isSubmittingRef.current && !isMutedRef.current) {
+        setTimeout(() => {
+          if (phaseRef.current === "interviewing" && !isAiSpeakingRef.current) {
+            try { startListening(); } catch {}
+          }
+        }, 500);
+      }
     };
 
     try { 
@@ -623,7 +637,14 @@ export default function InterviewPage() {
           onReturn={warningType === "fullscreen" ? async () => {
             try { await document.documentElement.requestFullscreen(); setShowWarning(false); if (countdownRef.current) clearInterval(countdownRef.current); } catch {}
           } : undefined}
-          onDismiss={() => setShowWarning(false)} />
+          onDismiss={async () => {
+            setShowWarning(false);
+            // If it was a fullscreen warning, also re-enter fullscreen
+            if (warningType === "fullscreen" && !document.fullscreenElement) {
+              try { await document.documentElement.requestFullscreen(); } catch {}
+              if (countdownRef.current) clearInterval(countdownRef.current);
+            }
+          }} />
 
         {/* Cheating Modal */}
         <Dialog open={isCheatingWarning} onOpenChange={() => {}}>
