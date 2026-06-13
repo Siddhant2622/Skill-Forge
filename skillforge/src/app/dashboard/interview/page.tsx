@@ -458,6 +458,8 @@ export default function InterviewPage() {
     let currentSessionTranscript = '';
     let silenceTimer: NodeJS.Timeout;
 
+    let isFatalError = false;
+
     recognition.onresult = (event: any) => {
       let interimTranscript = '';
       let finalPart = '';
@@ -489,7 +491,9 @@ export default function InterviewPage() {
 
     recognition.onerror = (e: any) => {
       console.error("Speech error:", e.error);
-      if (e.error === "not-allowed" || e.error === "service-not-available") {
+      // 'network' error causes infinite loop if we auto-restart, so treat it as fatal and fallback to text mode
+      if (e.error === "not-allowed" || e.error === "service-not-available" || e.error === "network") {
+        isFatalError = true;
         setShowTextInput(true);
       }
     };
@@ -497,7 +501,8 @@ export default function InterviewPage() {
     recognition.onend = () => {
       setIsListening(false);
       // Auto-restart if interview is still going and AI isn't speaking
-      if (phaseRef.current === "interviewing" && !isAiSpeakingRef.current && !isSubmittingRef.current && !isMutedRef.current) {
+      // IMPORTANT: Don't auto-restart if a fatal error occurred (e.g., network error) to prevent infinite loops
+      if (!isFatalError && phaseRef.current === "interviewing" && !isAiSpeakingRef.current && !isSubmittingRef.current && !isMutedRef.current) {
         setTimeout(() => {
           if (phaseRef.current === "interviewing" && !isAiSpeakingRef.current) {
             try { startListening(); } catch {}
