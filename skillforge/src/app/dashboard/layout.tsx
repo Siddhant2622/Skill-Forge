@@ -46,6 +46,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, loading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     // Redirect to home if not logged in
@@ -164,8 +165,11 @@ export default function DashboardLayout({
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Topbar */}
-        <header className="h-16 flex items-center justify-between px-4 md:px-8 border-b border-border bg-background/80 backdrop-blur-xl z-10 shrink-0">
+        {/* Topbar (Absolute overlay for blur effect) */}
+        <header className={cn(
+          "absolute top-0 left-0 right-0 h-16 flex items-center justify-between px-4 md:px-8 z-50 transition-all duration-300",
+          isScrolled ? "bg-background/70 backdrop-blur-lg border-b border-border shadow-sm" : "bg-transparent border-b border-transparent"
+        )}>
           <div className="flex items-center gap-3">
             <button 
               className="md:hidden p-2 rounded-md hover:bg-accent text-foreground"
@@ -193,7 +197,10 @@ export default function DashboardLayout({
         </header>
 
         {/* Scrollable Content */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-8 relative z-0">
+        <div 
+          className="flex-1 h-full overflow-y-auto p-4 md:p-8 pt-20 md:pt-24 relative z-0"
+          onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 10)}
+        >
           <div className="max-w-6xl mx-auto">
             {children}
           </div>
