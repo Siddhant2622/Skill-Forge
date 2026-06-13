@@ -30,7 +30,14 @@ export default function EnhanceStep() {
       });
 
       if (!res.ok) {
-        throw new Error("Failed to generate System enhancements");
+        let errMessage = "Failed to generate System enhancements (Server Error)";
+        try {
+          const errData = await res.json();
+          if (errData.error) errMessage = `API Error: ${errData.error}`;
+        } catch (e) {
+          errMessage = `Server Error ${res.status}: The backend completely failed to respond.`;
+        }
+        throw new Error(errMessage);
       }
 
       const data = await res.json();
