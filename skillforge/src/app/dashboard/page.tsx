@@ -16,6 +16,7 @@ export default function DashboardOverview() {
   const router = useRouter();
   const { user } = useAuth();
   const [analysis, setAnalysis] = useState<any /* eslint-disable-line */>(null);
+  const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -26,16 +27,32 @@ export default function DashboardOverview() {
       }
       try {
         const docSnap = await getDoc(doc(db, "users", user.uid));
-        if (docSnap.exists() && docSnap.data().careerAnalysis) {
-          setAnalysis(docSnap.data().careerAnalysis);
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (data.careerAnalysis) setAnalysis(data.careerAnalysis);
+          setUserData({
+            targetRole: data.targetRole || "Software Engineer",
+            targetCompany: data.targetCompany || "Top Tech Company",
+            expectedSalary: data.expectedSalary || "$100k+"
+          });
         } else {
           const data = localStorage.getItem("careerAnalysis");
           if (data) setAnalysis(JSON.parse(data));
+          setUserData({
+            targetRole: localStorage.getItem("targetRole") || "Software Engineer",
+            targetCompany: "Top Tech Company",
+            expectedSalary: "$100k+"
+          });
         }
       } catch (error) {
         console.error("Failed to fetch from Firebase", error);
         const data = localStorage.getItem("careerAnalysis");
         if (data) setAnalysis(JSON.parse(data));
+        setUserData({
+          targetRole: localStorage.getItem("targetRole") || "Software Engineer",
+          targetCompany: "Top Tech Company",
+          expectedSalary: "$100k+"
+        });
       } finally {
         setLoading(false);
       }
@@ -165,30 +182,72 @@ export default function DashboardOverview() {
               </div>
             </div>
 
-            <div className="space-y-4">
-              <h4 className="text-sm font-semibold border-b border-border pb-2">Daily Plan</h4>
-              <div className="space-y-2">
-                {analysis.dailyPlan.map((task: string, i: number) => (
-                  <div key={i} className="flex items-start gap-3 p-3 rounded-lg border border-border hover:bg-accent transition-colors cursor-pointer group">
-                    <div className="w-5 h-5 rounded-full border border-muted-foreground group-hover:border-primary flex-shrink-0 mt-0.5" />
-                    <div className="text-sm">{task}</div>
-                  </div>
-                ))}
+            <div className="relative border-l-2 border-primary/20 ml-3 space-y-8 pb-4 pt-2">
+              
+              {/* Step 1 */}
+              <div className="relative pl-6">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center ring-4 ring-background">
+                  <div className="w-2 h-2 rounded-full bg-primary-foreground" />
+                </div>
+                <h4 className="text-sm font-bold text-foreground mb-1">Step 1: Daily Foundations</h4>
+                <p className="text-xs text-muted-foreground mb-3">Immediate actions to close your skill gap.</p>
+                <div className="space-y-2">
+                  {analysis.dailyPlan.slice(0, 3).map((task: string, i: number) => (
+                    <div key={i} className="flex items-start gap-2 p-2.5 rounded-md border border-border/50 bg-background/50 text-sm">
+                      <div className="w-4 h-4 rounded-full border border-primary/50 flex-shrink-0 mt-0.5" />
+                      <span className="leading-tight">{task}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
 
-              <h4 className="text-sm font-semibold border-b border-border pb-2 pt-2">Weekly Milestones</h4>
-              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                {analysis.weeklyMilestones.map((ms: string, i: number) => (
-                  <li key={i}>{ms}</li>
-                ))}
-              </ul>
+              {/* Step 2 */}
+              <div className="relative pl-6">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-blue-500 flex items-center justify-center ring-4 ring-background">
+                  <div className="w-2 h-2 rounded-full bg-white" />
+                </div>
+                <h4 className="text-sm font-bold text-blue-400 mb-1">Step 2: Weekly Milestones</h4>
+                <div className="space-y-1.5 mt-2">
+                  {analysis.weeklyMilestones.slice(0, 2).map((ms: string, i: number) => (
+                    <div key={i} className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-blue-500/50" />
+                      {ms}
+                    </div>
+                  ))}
+                </div>
+              </div>
 
-              <h4 className="text-sm font-semibold border-b border-border pb-2 pt-2">Monthly Targets</h4>
-              <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground">
-                {analysis.monthlyTargets.map((target: string, i: number) => (
-                  <li key={i}>{target}</li>
-                ))}
-              </ul>
+              {/* Step 3 */}
+              <div className="relative pl-6">
+                <div className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-purple-500 flex items-center justify-center ring-4 ring-background">
+                  <div className="w-2 h-2 rounded-full bg-white" />
+                </div>
+                <h4 className="text-sm font-bold text-purple-400 mb-1">Step 3: Monthly Targets</h4>
+                <div className="space-y-1.5 mt-2">
+                  {analysis.monthlyTargets.slice(0, 2).map((target: string, i: number) => (
+                    <div key={i} className="text-sm text-muted-foreground flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-purple-500/50" />
+                      {target}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Final Destination */}
+              <div className="relative pl-6">
+                <div className="absolute -left-[15px] top-0.5 w-7 h-7 rounded-full bg-emerald-500 flex items-center justify-center ring-4 ring-background shadow-lg shadow-emerald-500/20">
+                  <Target className="w-4 h-4 text-white" />
+                </div>
+                <h4 className="text-base font-bold text-emerald-400">Destination Reached</h4>
+                <p className="text-sm text-foreground font-medium mt-1">
+                  {userData?.targetRole || "Software Engineer"} @ {userData?.targetCompany || "Top Tech Company"}
+                </p>
+                <div className="mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-semibold border border-emerald-500/20">
+                  <Briefcase className="w-3.5 h-3.5" />
+                  Expected: {userData?.expectedSalary || "$100k+"}
+                </div>
+              </div>
+
             </div>
           </CardContent>
         </Card>
