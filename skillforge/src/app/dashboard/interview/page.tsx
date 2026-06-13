@@ -488,6 +488,10 @@ export default function InterviewPage() {
     };
 
     recognition.onerror = (e: any) => {
+      // Ignore 'no-speech' error silently to prevent Next.js error overlays.
+      // It will safely auto-restart via the onend handler.
+      if (e.error === "no-speech") return;
+      
       console.error("Speech error:", e.error);
       // 'network' error causes infinite loop if we auto-restart, so treat it as fatal and fallback to text mode
       if (e.error === "not-allowed" || e.error === "service-not-available" || e.error === "network") {

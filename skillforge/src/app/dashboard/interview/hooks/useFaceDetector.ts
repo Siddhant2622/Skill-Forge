@@ -50,15 +50,17 @@ export function useFaceDetector(
         const g = imageData.data[i + 1];
         const b = imageData.data[i + 2];
 
-        // Simple skin detection: R > 95, G > 40, B > 20, max-min > 15
+        // Improved skin detection (more forgiving for different lighting and tones)
         const max = Math.max(r, g, b);
         const min = Math.min(r, g, b);
+        
+        // Lowered thresholds significantly to catch darker tones and poor lighting
         if (
-          r > 95 &&
-          g > 40 &&
-          b > 20 &&
-          max - min > 15 &&
-          Math.abs(r - g) > 15 &&
+          r > 50 &&
+          g > 30 &&
+          b > 15 &&
+          max - min > 10 &&
+          Math.abs(r - g) > 10 &&
           r > g &&
           r > b
         ) {
