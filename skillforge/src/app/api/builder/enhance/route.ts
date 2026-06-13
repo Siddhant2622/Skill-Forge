@@ -10,17 +10,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Missing mergedData" }, { status: 400 });
     }
 
-    const promptText = `You are an expert tech recruiter and personal branding coach.
-Based on the following user data (skills, experience, and projects), generate a compelling professional headline and a short professional bio.
-
-User Data:
-${JSON.stringify({
+const safeDataString = JSON.stringify({
   personalInfo: mergedData.personalInfo,
   skills: mergedData.skills,
   experience: mergedData.experience,
   projects: mergedData.projects,
   education: mergedData.education
-})}
+}).substring(0, 3000); // Prevent 90,000 token rate limit errors
+
+    const promptText = `You are an expert tech recruiter and personal branding coach.
+Based on the following user data (skills, experience, and projects), generate a compelling professional headline and a short professional bio.
+
+User Data:
+${safeDataString}
 
 Return ONLY a valid JSON object matching this exact structure:
 {
