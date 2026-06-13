@@ -136,7 +136,7 @@ export default function DashboardOverview() {
               <CardDescription>Your current proficiency vs. industry benchmark</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col">
-              <div className="flex-1 min-h-[300px]">
+              <div className="w-full h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
                   <RadarChart cx="50%" cy="50%" outerRadius="70%" data={analysis.skills}>
                     <PolarGrid stroke="var(--color-border)" />
@@ -168,7 +168,7 @@ export default function DashboardOverview() {
               <CardTitle>Placement Probability Forecast</CardTitle>
               <CardDescription>Predicted readiness over a 6-month timeline</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col min-h-[300px]">
+            <CardContent className="w-full h-[300px] pb-6">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={[
                   { month: "M1", score: Math.max(20, analysis.placementProbability - 40) },
