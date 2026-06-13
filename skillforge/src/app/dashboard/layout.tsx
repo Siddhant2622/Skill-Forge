@@ -46,7 +46,7 @@ export default function DashboardLayout({
   const router = useRouter();
   const { user, loading } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     // Redirect to home if not logged in
@@ -71,13 +71,13 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Sidebar (Desktop) */}
-      <aside className="hidden md:flex w-64 border-r border-border bg-card flex-col shadow-sm z-20">
+      <aside className="hidden md:flex w-64 border-r border-border bg-card flex-col shadow-sm z-30">
         <div className="h-16 flex items-center px-6 border-b border-border">
           <Sparkles className="w-5 h-5 text-primary mr-2" />
           <span className="font-bold tracking-tight">SkillForge</span>
         </div>
         
-        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
+        <div className="flex-1 overflow-y-auto py-4 px-3 space-y-1 hide-scrollbar">
           <div className="text-xs font-medium text-muted-foreground mb-4 px-3 mt-4">Menu</div>
           {sidebarLinks.map((link) => {
             const isActive = pathname === link.href;
@@ -164,11 +164,11 @@ export default function DashboardLayout({
       )}
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-        {/* Topbar (Absolute overlay for blur effect) */}
+      <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative bg-background/50">
+        {/* Topbar */}
         <header className={cn(
-          "absolute top-0 left-0 right-0 h-16 flex items-center justify-between px-4 md:px-8 z-50 transition-all duration-300",
-          isScrolled ? "bg-background/70 backdrop-blur-lg border-b border-border shadow-sm" : "bg-transparent border-b border-transparent"
+          "absolute top-0 left-0 w-full h-16 flex items-center justify-between px-4 md:px-8 z-20 transition-all duration-300",
+          scrolled ? "bg-background/60 backdrop-blur-md border-b border-border shadow-sm" : "bg-transparent border-transparent"
         )}>
           <div className="flex items-center gap-3">
             <button 
@@ -198,8 +198,8 @@ export default function DashboardLayout({
 
         {/* Scrollable Content */}
         <div 
-          className="flex-1 h-full overflow-y-auto p-4 md:p-8 pt-20 md:pt-24 relative z-0"
-          onScroll={(e) => setIsScrolled(e.currentTarget.scrollTop > 10)}
+          className="flex-1 overflow-y-auto p-4 md:p-8 pt-20 md:pt-24 relative z-0"
+          onScroll={(e) => setScrolled(e.currentTarget.scrollTop > 10)}
         >
           <div className="max-w-6xl mx-auto">
             {children}
